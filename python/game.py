@@ -54,8 +54,6 @@ class Player(sprite.Sprite):
                 self.y_speed = 0
                 self.rect.top = max(self.rect.top, p.rect.bottom)
         
-        self.x_speed = 0
-        self.y_speed = 0
 
     def rect_x(self):
         return self.rect.x
@@ -74,7 +72,7 @@ class Player(sprite.Sprite):
         elif self.position == 1:
             mw.blit(transform.flip(self.image,True,False),(self.rect.x,self.rect.y))
     def fire(self):
-        bullet=Bullet('pictures/kknife.png',self.rect.centerx,self.rect.top,15,20,20)
+        bullet=Bullet('pictures/kknife.png',50,15,self.rect.right,self.rect.centery,20)
         bullets.add(bullet)
     
 class Colide(GameSprite):
@@ -89,8 +87,8 @@ class Colide(GameSprite):
         self.y_speed = 0
 
 class Bullet(GameSprite):
-    def __init__(self,player_image,player_x,player_y,size_x,size_y,player_speed):
-        GameSprite.__init__(self,player_image,player_x,player_y,size_x,size_y)
+    def __init__(self,player_image,size_x,size_y,player_x,player_y,player_speed):
+        GameSprite.__init__(self,player_image,size_x,size_y,player_x,player_y)
         self.speed=player_speed
 
     def update(self):
@@ -352,15 +350,20 @@ monster_2.add(enemy12)
 monster_2.add(enemy13)
 monster_2.add(enemy14)
 
-listt2=GameSprite('pictures/spysook.png', 50,50,600,50)
+listt2=GameSprite('pictures/spysook.png', 50,50,600,30)
 listt3=GameSprite('pictures/spysook.png', 50,50,400,200)
 listt4=GameSprite('pictures/spysook.png', 50,50,1200,700)
 
 strilka_lvl_2 = GameSprite("pictures/strelk2.png", 50, 50, 550, 830)
 
 hero = Player('player/karoline_staandd.png', 78, 103, 100, 500, 0, 0, 0)
-
-
+listtt =sprite.Group()
+listtt.add(listt)
+listtt.add(listt1)
+listttt =sprite.Group()
+listttt.add(listt2)
+listttt.add(listt3)
+listttt.add(listt4)
 #звуки:
 mixer.init()
 mixer.music.load('music/song.mp3')
@@ -375,6 +378,7 @@ escape = False
 start_sound = True
 loose_sound = True
 win_sound = True
+start_menu=True
 d_1 = 0
 d_2 = 0
 d_3 = 0
@@ -385,28 +389,18 @@ j = 0
 k = 0
 amount=0
 while run:
-    time.delay(50)
-    pressed_keys = pygame.key.get_pressed()
     for e in event.get():
         if e.type == QUIT:
             run = False
-        if e.type == KEYDOWN:
+        elif e.type == KEYDOWN:
             if e.key== K_LEFT:
-                hero.x_speed = -5
+                hero.x_speed = -10
             elif e.key== K_RIGHT:
-                hero.x_speed = 5
+                hero.x_speed = 10
             elif e.key == K_DOWN:
-                hero.y_speed = 5
+                hero.y_speed = 10
             elif e.key == K_UP:
-                hero.y_speed = -5
-            elif e.key== K_a:
-                hero.x_speed = -5
-            elif e.key== K_d:
-                hero.x_speed = 5  
-            elif e.key == K_w:
-                hero.y_speed = -5
-            elif e.key == K_s:
-                hero.y_speed = 5
+                hero.y_speed = -10
             elif e.key == K_SPACE:
                 hero.fire()
         elif e.type == KEYUP:
@@ -418,84 +412,14 @@ while run:
                 hero.y_speed = 0
             elif e.key == K_DOWN:
                 hero.y_speed = 0
-            if e.key== K_a:
-                hero.x_speed = 0
-            elif e.key== K_d:
-                hero.x_speed = 0
-            elif e.key == K_w: 
-                hero.y_speed = 0
-            elif e.key == K_s:
-                hero.y_speed = 0
-                
-
-    '''if escape:
-        if keys[K_a] or keys[K_w] or keys[K_s] or keys[K_d]:
-            camerman.move += 1       
-        if camerman.move >= 15:
-            camerman.move = 0
-        if keys[K_a] and keys[K_w]:
-            camerman.x_speed = -10
-            camerman.y_speed = -10
-            camerman.position = 1
-        elif keys[K_a] and keys[K_s]:
-            camerman.x_speed = -10
-            camerman.y_speed = 10
-            camerman.position = 1
-        elif keys[K_d] and keys[K_w]:
-            camerman.x_speed = 10
-            camerman.y_speed = -10
-            camerman.position = 0
-        elif keys[K_s] and keys[K_d]:
-            camerman.x_speed = 10
-            camerman.y_speed = 10
-            camerman.position = 0 
-        elif keys[K_a]:
-            camerman.x_speed = -10
-            camerman.position = 1
-        elif keys[K_d]:
-            camerman.x_speed = 10
-            camerman.position = 0
-        elif keys[K_w]:
-            camerman.y_speed = -10
-        elif keys[K_s]:
-            camerman.y_speed = 10
-        if (keys[K_a] or keys[K_w] or keys[K_s] or keys[K_d]) == False:
-            camerman.move = 0'''
-
-    
-
-    '''if start_menu:
-        fon_start_menu = transform.scale(image.load("Assets/werewolf_fon.jpg"), [1500, 900])
-        mw.fill((255, 255, 255))
-        mw.blit(fon_start_menu, (0, 0))
-        button_story = Button("Assets/Buttons/Story_button.png", 280, 88, 1000, 250)
-        button_story.reset()
-        button_test_level = Button("Assets/Buttons/Test_Level_button.png", 280, 88, 1000, 400)
-        button_test_level.reset()
-        if e.type == MOUSEBUTTONDOWN and e.button == 1:
-            x, y = e.pos
-            if button_story.colidepoint(x, y):
-                start_menu = False
-                level_1 = True
-        if e.type == MOUSEBUTTONDOWN and e.button == 1:
-            x, y = e.pos
-            if button_test_level.colidepoint(x, y):
-                start_menu = False
-                test_level = True'''
-     
-    '''if not level_1 and sprite.collide_rect(camerman, werewolf):
-        finish = True
-        test_level = False
-        level_1 = False
-        lose = transform.scale(image.load("Assets/game_over.jpg"), [1500, 900])
-        mw.fill((255, 255, 255))
-        mw.blit(lose, (0, 0))'''
 
     if not finish:
+        
         mw.blit(fon_1, [0, 0])
         mw.blit(fon_1, [0, 450])
         mw.blit(fon_1, [750, 0])
         mw.blit(fon_1, [750, 450])
+
         if level_1:
             if sprite.collide_rect(nevidimka_level_2, hero):
                 level_1 = False
@@ -508,21 +432,16 @@ while run:
             hero.draw()
             hero.update(barriers_1)
             stones.draw(mw)
-            listt.reset()
-            listt1.reset()
+            listtt.draw(mw)
             bullets.update()
             bullets.draw(mw)
             sprite.groupcollide(monster,bullets, True,True)
             sprite.groupcollide(bullets,barriers_1,True,False)
             sprite.groupcollide(bullets,stones,True,False)
-            if sprite.collide_rect(hero,listt):
+            if sprite.spritecollide(hero,listtt, True):
                 amount+=1
-                del listt
-            if sprite.collide_rect(hero,listt1):
-                amount+=1
-                del listt1
+            
             if sprite.spritecollide(hero,monster,False):
-        
                 finish=True
                 img=image.load('fon/game__over.jpg')
                 mw.blit(transform.scale(img,(1500,900)),(0,0))
@@ -536,23 +455,14 @@ while run:
             strilka_lvl_2.reset()
             monster_2.update()
             monster_2.draw(mw)
-            listt2.reset()
-            listt3.reset()
-            listt4.reset()
+            listttt.draw(mw)
             bullets.update()
             bullets.draw(mw)
-            sprite.groupcollide(monster,bullets, True,True)
+            sprite.groupcollide(monster_2,bullets, True,True)
             sprite.groupcollide(bullets,barriers_2,True,False)
             sprite.groupcollide(bullets,stones_2,True,False)
-            if sprite.collide_rect(hero,listt2):
+            if sprite.spritecollide(hero,listttt,True):
                 amount+=1
-                del listt2
-            if sprite.collide_rect(hero,listt3):
-                amount+=1
-                del listt3
-            if sprite.collide_rect(hero,listt4):
-                amount+=1
-                del listt4
             hero.draw()
             hero.update(barriers_1)
             stones_2.draw(mw)
@@ -560,23 +470,22 @@ while run:
                 finish=True
                 imgg=image.load('fon/game__over.jpg')
                 mw.blit(transform.scale(imgg,(1500,900)),(0,0))
+        if start_menu:
+            fon_start_menu = transform.scale(image.load("fon/first_screen.jpg"), [1500, 900])
+            mw.fill((255, 255, 255))
+            mw.blit(fon_start_menu, (0, 0))
+            button_story = Button("pictures/sttart.png", 280, 88, 1000, 250)
+            button_story.reset()
+            if e.type == MOUSEBUTTONDOWN and e.button == 1:
+                x, y = e.pos
+                if button_story.colidepoint(x, y):
+                    start_menu = False
+                    level_1 = True
         if amount == 5:
-            if false==True:
                 finish=True
                 imggg=image.load('fon/you__win.jpg')             
                 mw.blit(transform.scale(imggg,(1500,900)),(0,0))
             #barriers_2.draw(mw)
-        
 
-
-    '''if test_level:
-        mw.blit(picture, [0, 0])
-        barriers.draw(mw)
-        camerman.draw()
-        werewolf.draw()
-        camerman.update(barriers)
-        werewolf.update(barriers)
-        camerman.moves()
-        werewolf.moves()'''
-    display.update()
-    clock.tick(40)
+        display.update()
+        time.delay(50)
